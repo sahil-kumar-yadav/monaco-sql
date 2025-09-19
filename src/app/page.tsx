@@ -1,7 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Button, Flex, Heading } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Flex,
+  Heading,
+} from "@chakra-ui/react";
+import { ColorModeButton, useColorModeValue } from "@/components/ui/color-mode";
 import initSqlJs, { Database, SqlJsStatic } from "sql.js";
 
 import SQLEditor from "@/components/SqlEditor";
@@ -15,6 +21,9 @@ export default function Home() {
   const [results, setResults] = useState<any[]>([]);
   const [columns, setColumns] = useState<string[]>([]);
 
+  const bg = useColorModeValue("gray.50", "gray.900");
+  const cardBg = useColorModeValue("white", "gray.800");
+
   useEffect(() => {
     const loadDB = async () => {
       const SQL = await initSqlJs({
@@ -22,7 +31,6 @@ export default function Home() {
       });
       const db = new SQL.Database();
 
-      // Preload schema
       db.run(`
         CREATE TABLE users (id INTEGER PRIMARY KEY, name TEXT, age INTEGER);
         INSERT INTO users (name, age) VALUES ('Alice', 25);
@@ -48,14 +56,9 @@ export default function Home() {
         setColumns(columns);
         setResults(values);
 
-        // Show success toast
         toaster.success({
           title: "Query successful",
           description: "Your SQL query ran successfully.",
-          action: {
-            label: "Undo",
-            onClick: () => console.log("Undo clicked"),
-          },
         });
       } else {
         setColumns([]);
@@ -70,24 +73,27 @@ export default function Home() {
       toaster.error({
         title: "SQL Error",
         description: err.message,
-        action: {
-          label: "Retry",
-          onClick: () => runQuery(),
-        },
       });
     }
   };
 
   return (
-    <Flex direction="column" p={6} gap={6}>
-      <Heading size="lg" color="accent">
-        SQL Playground
-      </Heading>
-      <SQLEditor value={query} onChange={setQuery} />
-      <Button colorScheme="blue" alignSelf="flex-start" onClick={runQuery}>
-        Run Query
-      </Button>
-      <ResultsTable columns={columns} rows={results} />
-    </Flex>
+    <Box bg={bg} minH="100vh">
+      <Flex justify="space-between" align="center" mb={6} mt={6}>
+        <Heading size="lg" color="accent">
+          SQL Playground
+        </Heading>
+        <ColorModeButton />
+      </Flex>
+
+      <Flex direction="column" gap={6} bg={cardBg} p={6} rounded="xl" shadow="md">
+
+        <SQLEditor value={query} onChange={setQuery} />
+        <Button colorScheme="blue" alignSelf="flex-start" onClick={runQuery}>
+          Run Query
+        </Button>
+        <ResultsTable columns={columns} rows={results} />
+      </Flex>
+    </Box>
   );
 }

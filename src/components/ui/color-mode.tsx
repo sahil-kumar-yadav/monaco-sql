@@ -9,12 +9,15 @@ import { LuMoon, LuSun } from "react-icons/lu"
 
 export interface ColorModeProviderProps extends ThemeProviderProps {}
 
-export function ColorModeProvider(props: ColorModeProviderProps) {
+export function ColorModeProvider({ children }: { children: React.ReactNode }) {
   return (
-    <ThemeProvider attribute="class" disableTransitionOnChange {...props} />
-  )
+    <ClientOnly fallback={null}>
+      <ThemeProvider attribute="class" disableTransitionOnChange>
+        {children}
+      </ThemeProvider>
+    </ClientOnly>
+  );
 }
-
 export type ColorMode = "light" | "dark"
 
 export interface UseColorModeReturn {
