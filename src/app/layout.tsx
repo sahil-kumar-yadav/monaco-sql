@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { Box, Flex, Heading } from "@chakra-ui/react";
+import { Box } from "@chakra-ui/react";
 import { Providers } from "@/providers/Providers";
-
+import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
   title: "SQL Playground",
@@ -18,8 +18,9 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body>
         <Providers>
-          <Box as="main" p="1"  width="100%">
+          <Box as="main" p={8} maxW="8xl" mx="auto">
             {children}
+            <Toaster />
           </Box>
         </Providers>
       </body>
